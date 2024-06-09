@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, session, url_for, redirect
-from accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
+from mysql_accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
 
 app = Flask(__name__)
 
 @app.route('/')
 def welcomePage():
-    return(render_template('welcome.html'))
+    return(render_template('login.html', login_message="Welcome to Banerjee's Kitchen"))
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
