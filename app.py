@@ -52,13 +52,7 @@ def register():
     
 @app.route('/profile/<username>')
 def profile_page(username):
-    x = get_info(username)
-    u_name = searchName(username)
-    usrname = x[0][1]
-    passw = x[0][2]
-    f_name = x[0][3]
-    l_name = x[0][4]
-    return(render_template('profile.html', NameofUser=u_name, username=usrname, password=passw,fname=f_name, lname=l_name))
+    pass
 
 @app.route('/profile/<username>/delete')
 def delete_account(username):
