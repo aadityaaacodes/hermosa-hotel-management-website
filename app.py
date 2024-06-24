@@ -3,6 +3,8 @@ from mysql_accessor import verify, authenticate, searchName, registration, get_i
 
 app = Flask(__name__)
 
+# Client-side routes
+
 @app.route('/')
 def welcomePage():
     return(render_template('login.html', login_message="Welcome to Banerjee's Kitchen"))
@@ -59,6 +61,11 @@ def delete_account(username):
     msg = (delete_my_account(username))
     msg = msg[0]
     return(redirect(url_for('login')))
+
+
+# Admin-side routes 
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=9000)
