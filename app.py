@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
+from admin_functions import add_product, rem_product
 
 app = Flask(__name__)
 
@@ -60,12 +61,14 @@ def profile_page(username):
 def delete_account(username):
     msg = (delete_my_account(username))
     msg = msg[0]
-    return(redirect(url_for('login')))
+    return(redirect(url_for('login', page_title="Admin")))
 
 
 # Admin-side routes 
 
-
+@app.route('/admin/<func>')
+def admin_page(func):
+    return render_template(f'admin-{func}.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=9000)

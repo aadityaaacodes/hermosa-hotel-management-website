@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+<!-- head: title -->
+{% block title %}
+Admin
+{% endblock %}
+
+<!-- body -->
+{% block content %}
+
+
+<form action="/submit_product" method="post">
+    <label for="name">Product Name:</label><br>
+    <input type="text" id="name" name="name" placeholder="Butter Chicken" required><br><br>
+    
+    <label for="price">Price(₹):</label><br>
+    <input type="number" id="price" name="price" step="0.01" placeholder="600" required><br><br>
+    
+    <label for="isVeg">Type:</label><br>
+    <select id="veg" name="veg" required>
+        <option value="Choose" selected disabled>Choose</option>
+        <option value="yes">Vegetarian</option>
+        <option value="no">Non-vegetarian</option>
+    </select><br><br>
+    
+    <label for="description">Description:</label><br>
+    <textarea id="description" name="description" rows="10" cols="50" required></textarea><br><br>
+
+    <label for="image_link">Image Link:</label><br>
+        <input type="url" id="image_link" name="image_link" style="width: 40%;" required><br><br>
+
+    <input type="submit" value="Submit" >
+</form>
+
+{% endblock %}
