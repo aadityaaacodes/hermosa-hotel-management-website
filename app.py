@@ -66,26 +66,26 @@ def delete_account(username):
 
 # Admin-side routes 
 
-@app.route('/admin/<func>', methods=['GET', 'POST'])
-def admin_page(func, messg="Item deleted successfully!"):
-    if func=="add":
-        if request.method=='POST':
-            P_details = request.form.to_dict()
-            o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
-            return(render_template('admin-home.html', welcome_message=o_p))
+@app.route('/admin/add', methods=['GET', 'POST'])
+def admin_page(messg="Item deleted successfully!"):
+    if request.method=='POST':
+        P_details = request.form.to_dict()
+        o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
+        return(render_template('admin-home.html', welcome_message=o_p))
 
-        elif request.method=='GET':
-            return render_template(f'admin-{func}.html', welcome_message="Welcome!")
-    
-    if func=='view':
-        if request.method=='GET':
-            x = show_products()
-            return render_template(f'admin-{func}.html', P_table=x, msg="Welcome!")
-        elif request.method=='POST':
-            P_id = request.form.get("product_id")
-            action = request.form.get("action")
-            return(redirect(url_for('del_product', pid=P_id)))
-            # return(render_template(f'admin-{action}.html', pid=P_id))
+    else:
+        return render_template(f'admin-add.html', welcome_message="Welcome!")
+
+@app.route('/admin/view', methods=['GET', 'POST'])
+def view_page():
+    if request.method=='POST':
+        P_id = request.form.get("product_id")
+        action = request.form.get("action")
+        return(redirect(url_for('del_product', pid=P_id)))
+        # return(render_template(f'admin-{action}.html', pid=P_id))
+    else:
+        x = show_products()
+        return render_template(f'admin-view.html', P_table=x, msg="Welcome!")
         
 @app.route('/admin/delete/<string:pid>')
 def del_product(pid):

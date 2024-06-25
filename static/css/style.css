@@ -1,0 +1,26 @@
+table {
+    border-collapse: collapse; 
+    width: 90%; 
+    border: 2px solid #000000;
+    margin: 0 auto;
+}
+
+table thead {
+    background-color: #f0f8ff;
+    border: 2px solid #ccc; 
+    padding: 8px;
+}
+
+table th, table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f0f0f0; /* Light grey color */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #ffffff; /* White color */
+}

@@ -80,7 +80,29 @@ def show_products():
     # # res = result1+result2
     # return(res)
     
+def filter_products():
+    db = mysql.connector.connect(
+        host = "localhost", 
+        user = "root", 
+        password = "cincy@2024",
+        database = "banerjee_kitchen"
+    )
 
+    cursor = db.cursor()
+    cond1 = ""
+    cond2 = ""
+    cond3 = ""
+    cond4 = ""
+    cond5 = ""
+    cond6 = ""
+    cond7 = ""
+    sql1 = "SELECT product_id, name, price, rating, frequency, isVeg, type FROM product_info;"
+    sql2 = "SELECT COUNT(*) FROM product_info;"
+    cursor.execute(sql1)
+    result1 = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return(result1)
 
 # x = show_products()
 # print(x)
