@@ -10,7 +10,6 @@ Product Catalogue
 <h2>{{msg}}</h2>
 <br>
 
-
 <table>
   <thead>
     <tr>
@@ -26,6 +25,80 @@ Product Catalogue
     </tr>
   </thead> 
   <tbody>
+    <tr>
+      <td>
+        <form action="ORDER BY" name="product_id">
+          <select>
+            <option value="" selected>None</option>
+            <option value="ASC">Higher-Lower</option>
+            <option value="DSC">Lower-Higher</option>
+          </select>
+        </form>
+      </td>
+
+      <td>
+        <form action="ORDER BY" name="name">
+          <select>
+            <option value="" selected>None</option>
+            <option value="ASC">Higher-Lower</option>
+            <option value="DSC">Lower-Higher</option>
+          </select>
+        </form>
+      </td>
+
+      <td>
+        <form action="ORDER BY" name="price">
+          <select>
+            <option value="" selected>None</option>
+            <option value="ASC">Higher-Lower</option>
+            <option value="DSC">Lower-Higher</option>
+          </select>
+        </form>
+      </td>
+
+      <td>
+        <form action="ORDER BY" name="rating">
+          <select>
+            <option value="" selected>None</option>
+            <option value="ASC">Higher-Lower</option>
+            <option value="DSC">Lower-Higher</option>
+          </select>
+        </form>
+      </td>
+
+      <td>
+        <form action="ORDER BY" name="frequency">
+          <select>
+            <option value="" selected>None</option>
+            <option value="ASC">Higher-Lower</option>
+            <option value="DSC">Lower-Higher</option>
+          </select>
+        </form>
+      </td>
+
+      <td>
+        <form action="WHERE isVeg =" name="isVeg">
+          <select>
+            <option value="" selected>None</option>
+            <option value="Vegetarian">Veg</option>
+            <option value="Non-vegetarian">Non-Veg</option>
+          </select>
+        </form>
+      </td>
+
+      <td>
+        <form action="WHERE type =" name="type">
+          <select>
+            <option value="" selected>None</option>
+            <option value="Food">Food</option>
+            <option value="Beverage">Beverage</option>
+            <option value="Dessert">Dessert</option>
+          </select>
+        </form>
+      </td>
+
+    </tr>
+
     {% for item in P_table %}
     <tr>
       <td>{{ item[0] }}</td>  
