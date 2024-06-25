@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
-from admin_functions import add_product, rem_product
+from admin_functions import add_product, rem_product, show_products
 
 app = Flask(__name__)
 
@@ -76,6 +76,17 @@ def admin_page(func):
 
         elif request.method=='GET':
             return render_template(f'admin-{func}.html')
+    
+    if func=='view':
+        if request.method=='GET':
+            x = show_products()
+            return render_template(f'admin-{func}.html', P_table=x)
+
+
+
+
+
+
 
 # testing purposes
 @app.route('/test/<func>', methods=['GET', 'POST'])
