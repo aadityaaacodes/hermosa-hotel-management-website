@@ -10,6 +10,7 @@ Product Catalogue
 
 <br>
 
+
 <table>
   <thead>
     <tr>
@@ -34,11 +35,31 @@ Product Catalogue
       <td>{{ item[4] }}</td> 
       <td>{{ item[5] }}</td> 
       <td>{{ item[6] }}</td>
-      <td><button>edit</button></td>
-      <td><button>dlt</button></td>
+      <td>
+        <form method="POST" action="">
+        <input type="hidden" name='product_id' value='{{item[0]}}'>
+        <input type="submit" name="action" value="edit">
+        </form>
+      </td>
+      <td>
+        <form method="POST" action="">
+          <input type="hidden" name='product_id' value='{{item[0]}}'>
+          <input type="submit" name="action" value="delete">
+          </form>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<script>
+  function editP(a){
+    alert(a)
+  }
+
+  function dltP(){
+    alert("Are you sure?")
+  }
+  </script>
 
 {% endblock %}

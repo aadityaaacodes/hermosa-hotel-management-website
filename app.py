@@ -81,6 +81,10 @@ def admin_page(func):
         if request.method=='GET':
             x = show_products()
             return render_template(f'admin-{func}.html', P_table=x)
+        elif request.method=='POST':
+            P_id = request.form.get("product_id")
+            action = request.form.get("action")
+            return(render_template(f'admin-{action}.html', pid=P_id))
 
 
 
