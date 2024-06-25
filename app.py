@@ -67,7 +67,7 @@ def delete_account(username):
 # Admin-side routes 
 
 @app.route('/admin/<func>', methods=['GET', 'POST'])
-def admin_page(func):
+def admin_page(func, messg="Item deleted successfully!"):
     if func=="add":
         if request.method=='POST':
             P_details = request.form.to_dict()
@@ -75,16 +75,23 @@ def admin_page(func):
             return(render_template('admin-home.html', welcome_message=o_p))
 
         elif request.method=='GET':
-            return render_template(f'admin-{func}.html')
+            return render_template(f'admin-{func}.html', welcome_message="Welcome!")
     
     if func=='view':
         if request.method=='GET':
             x = show_products()
-            return render_template(f'admin-{func}.html', P_table=x)
+            return render_template(f'admin-{func}.html', P_table=x, msg="Welcome!")
         elif request.method=='POST':
             P_id = request.form.get("product_id")
             action = request.form.get("action")
-            return(render_template(f'admin-{action}.html', pid=P_id))
+            return(redirect(url_for('del_product', pid=P_id)))
+            # return(render_template(f'admin-{action}.html', pid=P_id))
+        
+@app.route('/admin/delete/<string:pid>')
+def del_product(pid):
+    # return(render_template('test.html', message=pid))
+    rem_product(pid)
+    return(redirect((url_for('admin_page', func='view'))))
 
 
 

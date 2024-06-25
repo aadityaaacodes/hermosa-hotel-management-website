@@ -81,10 +81,8 @@ def show_products():
     # return(res)
     
 
-x = show_products()
-print(x)
 
-
-
+# x = show_products()
+# print(x)
 # add_product("Biryani", 98, "BKL Chutiya", "Vegetarian", "www.google.com")
 # rem_product(3)
