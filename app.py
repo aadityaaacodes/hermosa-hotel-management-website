@@ -66,9 +66,26 @@ def delete_account(username):
 
 # Admin-side routes 
 
-@app.route('/admin/<func>')
+@app.route('/admin/<func>', methods=['GET', 'POST'])
 def admin_page(func):
-    return render_template(f'admin-{func}.html')
+    if func=="add":
+        if request.method=='POST':
+            P_details = request.form.to_dict()
+            o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
+            return(render_template('admin-home.html', welcome_message=o_p))
+
+        elif request.method=='GET':
+            return render_template(f'admin-{func}.html')
+
+# testing purposes
+@app.route('/test/<func>', methods=['GET', 'POST'])
+def test_forms(func):
+    if request.method=='POST':
+        PName = request.form["name"]
+        return(render_template('test.html', message=PName))
+        # return(render_template('test.html', message=PName))
+    else:
+        return(render_template(f'admin-{func}.html'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=9000)

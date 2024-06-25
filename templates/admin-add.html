@@ -9,20 +9,28 @@ Admin
 {% block content %}
 
 
-<form action="/submit_product" method="post">
+<form action="" method="POST">
     <label for="name">Product Name:</label><br>
     <input type="text" id="name" name="name" placeholder="Butter Chicken" required><br><br>
     
     <label for="price">Price(₹):</label><br>
     <input type="number" id="price" name="price" step="0.01" placeholder="600" required><br><br>
     
-    <label for="isVeg">Type:</label><br>
+    <label for="isVeg">Ingredients Information:</label><br>
     <select id="veg" name="veg" required>
         <option value="Choose" selected disabled>Choose</option>
         <option value="yes">Vegetarian</option>
         <option value="no">Non-vegetarian</option>
     </select><br><br>
     
+    <label for="type">Type:</label><br>
+    <select id="type" name="type" required>
+        <option value="Choose" selected disabled>Choose</option>
+        <option value="Food">Food</option>
+        <option value="Beverage">Beverage</option>
+        <option value="Dessert">Dessert</option>
+    </select><br><br>
+
     <label for="description">Description:</label><br>
     <textarea id="description" name="description" rows="10" cols="50" required></textarea><br><br>
 

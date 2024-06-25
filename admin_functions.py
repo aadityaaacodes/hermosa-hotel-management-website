@@ -1,6 +1,7 @@
 import mysql.connector
+from mysql.connector import Error
 
-def add_product(p_name, price, desc, veg, imgL):
+def add_product(p_name, price, desc, veg, type, imgL):
 
     db = mysql.connector.connect(
         host = "localhost", 
@@ -10,13 +11,19 @@ def add_product(p_name, price, desc, veg, imgL):
     )
 
     cursor = db.cursor()
-    sql = f"INSERT INTO product_info (`name`, `price`, `description`, `isVeg`, `imageLink`) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(sql, (p_name, price, desc, veg, imgL))
-    result = cursor.fetchall()
-    print(result)
-    db.commit()
-    cursor.close()
-    db.close()
+    sql = f"INSERT INTO product_info (`name`, `price`, `description`, `isVeg`, `type`, `imageLink`) VALUES (%s, %s, %s, %s, %s, %s)"
+    try:
+        cursor.execute(sql, (p_name, price, desc, veg, type, imgL))
+        result = cursor.fetchall()
+        print(result)
+        db.commit()
+        cursor.close()
+        db.close()
+        return("Product Added Successfully!")
+    except Error as err:
+        cursor.close()
+        db.close()
+        return(f"Error in Adding Product: {err}")
 
 def rem_product(p_id):
 
