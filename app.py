@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
-from admin_functions import add_product, rem_product, show_products
+from admin_functions import add_product, rem_product, show_products, filter_products
 
 app = Flask(__name__)
 
@@ -81,8 +81,16 @@ def view_page():
     if request.method=='POST':
         P_id = request.form.get("product_id")
         action = request.form.get("action")
-        return(redirect(url_for('del_product', pid=P_id)))
-        # return(render_template(f'admin-{action}.html', pid=P_id))
+        if action == 'delete':
+            return(redirect(url_for('del_product', pid=P_id)))
+        
+        elif action == 'apply':
+            F_veg = request.form.get("isVeg")
+            F_type = request.form.get("type")
+            res = filter_products(veg_info=F_veg, type=F_type)
+            # return(f"{F_veg}, {F_type}")
+            return render_template(f'admin-view.html', P_table=res, msg="Welcome!")        
+        
     else:
         x = show_products()
         return render_template(f'admin-view.html', P_table=x, msg="Welcome!")

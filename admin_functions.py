@@ -80,7 +80,7 @@ def show_products():
     # # res = result1+result2
     # return(res)
     
-def filter_products():
+def filter_products(veg_info="None", type="None"):
     db = mysql.connector.connect(
         host = "localhost", 
         user = "root", 
@@ -94,15 +94,21 @@ def filter_products():
     cond3 = ""
     cond4 = ""
     cond5 = ""
-    cond6 = ""
-    cond7 = ""
-    sql1 = "SELECT product_id, name, price, rating, frequency, isVeg, type FROM product_info;"
-    sql2 = "SELECT COUNT(*) FROM product_info;"
-    cursor.execute(sql1)
+    cond6 = "isVeg IS NOT NULL"
+    cond7 = "type IS NOT NULL"
+    if veg_info !=  "None":
+        cond6 = f"isVeg = '{veg_info}'"
+    if type != "None":
+        cond7 = f"type = '{type}'"
+    cond_sql = f" WHERE {cond6} AND {cond7}"
+    sql = f"SELECT product_id, name, price, rating, frequency, isVeg, type FROM product_info {cond_sql};"
+    cursor.execute(sql)
     result1 = cursor.fetchall()
     cursor.close()
     db.close()
     return(result1)
+
+# filter_products(veg_info="Vegetarian")
 
 # x = show_products()
 # print(x)

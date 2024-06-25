@@ -26,77 +26,69 @@ Product Catalogue
   </thead> 
   <tbody>
     <tr>
+      <form action="" method="POST">
+        
       <td>
-        <form action="ORDER BY" name="product_id">
-          <select>
+          <select name="product_id">
             <option value="" selected>None</option>
             <option value="ASC">Higher-Lower</option>
             <option value="DSC">Lower-Higher</option>
           </select>
-        </form>
       </td>
 
       <td>
-        <form action="ORDER BY" name="name">
-          <select>
+          <select name="name">
             <option value="" selected>None</option>
             <option value="ASC">Higher-Lower</option>
             <option value="DSC">Lower-Higher</option>
           </select>
-        </form>
       </td>
 
       <td>
-        <form action="ORDER BY" name="price">
-          <select>
+          <select name="price">
             <option value="" selected>None</option>
             <option value="ASC">Higher-Lower</option>
             <option value="DSC">Lower-Higher</option>
           </select>
-        </form>
       </td>
 
       <td>
-        <form action="ORDER BY" name="rating">
-          <select>
+          <select name="rating">
             <option value="" selected>None</option>
             <option value="ASC">Higher-Lower</option>
             <option value="DSC">Lower-Higher</option>
           </select>
-        </form>
       </td>
 
       <td>
-        <form action="ORDER BY" name="frequency">
-          <select>
+          <select name="frequency">
             <option value="" selected>None</option>
             <option value="ASC">Higher-Lower</option>
             <option value="DSC">Lower-Higher</option>
           </select>
-        </form>
       </td>
 
       <td>
-        <form action="WHERE isVeg =" name="isVeg">
-          <select>
-            <option value="" selected>None</option>
+          <select name="isVeg">
+            <option value="None" selected>None</option>
             <option value="Vegetarian">Veg</option>
             <option value="Non-vegetarian">Non-Veg</option>
           </select>
-        </form>
       </td>
 
       <td>
-        <form action="WHERE type =" name="type">
-          <select>
-            <option value="" selected>None</option>
+          <select name="type">
+            <option value="None" selected>None</option>
             <option value="Food">Food</option>
             <option value="Beverage">Beverage</option>
             <option value="Dessert">Dessert</option>
           </select>
-        </form>
       </td>
 
+      <td>
+        <input type="submit" name="action" value="apply">
+      </td>
+    </form>
     </tr>
 
     {% for item in P_table %}
