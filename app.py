@@ -66,6 +66,25 @@ def delete_account(username):
 
 # Admin-side routes 
 
+@app.route('/admin/authenticate', methods=['GET', 'POST'])
+def admin_authenticate():
+    if request.method=='POST':
+        u = request.form.get("usrname")
+        p = request.form.get("passw")
+        if u == "username":
+            if p == "password":
+                return (redirect(url_for('admin_homepage')))
+            else:
+                return(render_template('admin-auth.html', log_message="Incorrect Password"))
+        else:
+                return(render_template('admin-auth.html', log_message="Incorrect Username"))
+    else:
+        return(render_template('admin-auth.html', log_message="Welcome! Please enter credentials"))
+
+@app.route('/admin/home')
+def admin_homepage():
+    return(render_template('admin-home.html'))
+
 @app.route('/admin/add', methods=['GET', 'POST'])
 def add_product_page(messg="Item deleted successfully!"):
     if request.method=='POST':
