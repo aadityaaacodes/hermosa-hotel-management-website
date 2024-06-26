@@ -85,9 +85,9 @@ def view_page():
             return(redirect(url_for('del_product', pid=P_id)))
         
         elif action == 'apply':
-            F_veg = request.form.get("isVeg")
-            F_type = request.form.get("type")
-            res = filter_products(veg_info=F_veg, type=F_type)
+            # F_veg = request.form.get("isVeg")
+            # F_type = request.form.get("type")
+            res = filter_products(c1=request.form.get("c1"), c2=request.form.get("c2"), c3=request.form.get("c3"), c4=request.form.get("c4"), c5=request.form.get("c5"), c6=request.form.get("isVeg"), c7=request.form.get("type"))
             # return(f"{F_veg}, {F_type}")
             return render_template(f'admin-view.html', P_table=res, msg="Welcome!")        
         
