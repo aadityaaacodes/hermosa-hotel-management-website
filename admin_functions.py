@@ -120,8 +120,54 @@ def filter_products(c1="ASC", c2="None", c3="None", c4="None", c5="None", c6="No
     db.close()
     return(result1)
 
+def edit_products(p_id, p_name, price, desc, veg, type, imgL):
+    db = mysql.connector.connect(
+        host = "localhost", 
+        user = "root", 
+        password = "cincy@2024",
+        database = "banerjee_kitchen"
+    )
+
+    cursor = db.cursor()
+    sql = f"UPDATE product_info SET p_name = %s, price = %s, description = %s, isVeg = %s, type = %s, imageLink = %s WHERE product_id = {p_id};"
+    try:
+        cursor.execute(sql, (p_name, price, desc, veg, type, imgL))
+        result = cursor.fetchall()
+        print(result)
+        db.commit()
+        cursor.close()
+        db.close()
+        return("Product Added Successfully!")
+    except Error as err:
+        cursor.close()
+        db.close()
+        return(f"Error in Adding Product: {err}")
+    db.commit()
+    result = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return(result)
+
+def show_product(pid):
+    db = mysql.connector.connect(
+        host = "localhost", 
+        user = "root", 
+        password = "cincy@2024",
+        database = "banerjee_kitchen"
+    )
+
+    cursor = db.cursor()
+    sql = f"SELECT p_name, price, isVeg, type, description, imageLink FROM product_info WHERE product_id={pid};"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return(result)
+
+# for i in show_product(37):
+#     print(i)
 # for i in filter_products(c1="DESC", c2="ASC", c6="Vegetarian", c7="Beverage"):
-#     print(i[1])
+#     print(i)
 # x = show_products()
 # print(x)
 # add_product("Biryani", 98, "BKL Chutiya", "Vegetarian", "www.google.com")

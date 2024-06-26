@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
-from admin_functions import add_product, rem_product, show_products, filter_products
+from admin_functions import add_product, rem_product, show_products, filter_products, show_product, edit_products
 
 app = Flask(__name__)
 
@@ -67,7 +67,7 @@ def delete_account(username):
 # Admin-side routes 
 
 @app.route('/admin/add', methods=['GET', 'POST'])
-def admin_page(messg="Item deleted successfully!"):
+def add_product_page(messg="Item deleted successfully!"):
     if request.method=='POST':
         P_details = request.form.to_dict()
         o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
@@ -77,12 +77,14 @@ def admin_page(messg="Item deleted successfully!"):
         return render_template(f'admin-add.html', welcome_message="Welcome!")
 
 @app.route('/admin/view', methods=['GET', 'POST'])
-def view_page():
+def view_page(messg="Welcome"):
     if request.method=='POST':
         P_id = request.form.get("product_id")
         action = request.form.get("action")
         if action == 'delete':
             return(redirect(url_for('del_product', pid=P_id)))
+        if action == 'edit':
+            return(redirect(url_for('edit_product', pid=P_id)))
         
         elif action == 'apply':
             # F_veg = request.form.get("isVeg")
@@ -93,15 +95,26 @@ def view_page():
         
     else:
         x = show_products()
-        return render_template(f'admin-view.html', P_table=x, msg="Welcome!")
+        return render_template(f'admin-view.html', P_table=x, msg=messg)
         
 @app.route('/admin/delete/<string:pid>')
 def del_product(pid):
     # return(render_template('test.html', message=pid))
     rem_product(pid)
-    return(redirect((url_for('admin_page', func='view'))))
+    return(redirect((url_for('view_page', messg='Product removed successfully'))))
 
-
+@app.route('/admin/edit/<string:pid>', methods=["POST", "GET"])
+def edit_product(pid):
+    if request.method=='POST':
+        product_meta = request.form.to_dict()
+        db_message = edit_products(p_id=pid, p_name=product_meta["Product Name"], price=product_meta["Price"], desc=product_meta["Description"], veg=product_meta["Ingridient Information"], type=product_meta["Product Type"], imgL=product_meta["Image Link"])
+        # return(request.form.to_dict())
+        return(redirect(url_for('view_page', messg=db_message)))
+    else:
+        x = show_product(pid)
+        field_names = ['Product Name', 'Price', 'Ingridient Information', 'Product Type', 'Description', 'Image Link']
+        product_dict = dict(zip(field_names, x))
+        return(render_template('admin-edit.html', pid=pid, msg=product_dict))
 
 
 

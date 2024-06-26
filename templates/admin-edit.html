@@ -1,4 +1,35 @@
 {%extends 'layout.html'%}
 {%block content%}
-<h1>{{pid}}</h1>
+<h1>Product ID: {{pid}}</h1>
+
+
+<form action="" method="POST">
+    {%for i in msg%}
+    {{i}}
+    <br>
+    <input type="text" name="{{i}}" value="{{msg[i]}}">
+    <br>
+    {%endfor%}
+    <input type="submit" value="Edit">
+</form>
+
+<!-- <form action="" method="POST">
+    {%for i in msg%}
+    {{i}}
+    <input type="text" name="P_name">
+    <br>
+    <input type="text" name="P_price">
+    <br>
+    <input type="text" name="P_veg">
+    <br>
+    <input type="text" name="P_type">
+    <br>
+    <input type="text" name="P_desc">
+    <br>
+    <input type="text" name="P_img">
+    <br>
+    <input type="submit" value="Edit">
+    {%endfor%}
+</form> -->
+
 {%endblock%}
