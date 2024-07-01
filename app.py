@@ -76,7 +76,7 @@ def put(log_info):
     with open(admin_info_path, 'w') as file:
         return json.dump(log_info, file)
 
-@app.route('/admin/authenticate', methods=['GET', 'POST'], endpoint='admin_authenticate')
+@app.route('/admin/authenticate', methods=['GET', 'POST'], endpoint='Logout')
 def admin_authenticate():
     if request.method=='POST':
         admin_log_info = provide()
@@ -96,7 +96,7 @@ def admin_authenticate():
     else:
         return(render_template('admin-auth.html', log_message="Welcome! Please enter credentials"))
 
-@app.route('/admin/authenticate/change', methods=['GET', 'POST'])
+@app.route('/admin/authenticate/change', methods=['GET', 'POST'], endpoint='Change Credentials')
 def admin_change():
     if request.method=='POST':
         admin_log_info=provide()
@@ -118,7 +118,7 @@ def admin_homepage():
     else:
         return(render_template('admin-home.html'))
 
-@app.route('/admin/add', methods=['GET', 'POST'], endpoint='add_product_page')
+@app.route('/admin/add', methods=['GET', 'POST'], endpoint='Add Products')
 def add_product_page(messg="Item deleted successfully!"):
     if request.method=='POST':
         P_details = request.form.to_dict()
@@ -128,7 +128,7 @@ def add_product_page(messg="Item deleted successfully!"):
     else:
         return render_template(f'admin-add.html', welcome_message="Welcome!")
 
-@app.route('/admin/view', methods=['GET', 'POST'], endpoint='view_page')
+@app.route('/admin/view', methods=['GET', 'POST'], endpoint='Manage Products')
 def view_page(messg="Welcome"):
     if request.method=='POST':
         P_id = request.form.get("product_id")
