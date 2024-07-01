@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
 from admin_functions import add_product, rem_product, show_products, filter_products, show_product, edit_products
+import json
 
 app = Flask(__name__)
 
@@ -66,26 +67,58 @@ def delete_account(username):
 
 # Admin-side routes 
 
-@app.route('/admin/authenticate', methods=['GET', 'POST'])
+# using a dynamic json file to store changes to admin credentials
+admin_info_path = 'admin_login_info.json'
+def provide():
+    with open(admin_info_path, 'r') as file:
+        return json.load(file)
+def put(log_info):
+    with open(admin_info_path, 'w') as file:
+        return json.dump(log_info, file)
+
+@app.route('/admin/authenticate', methods=['GET', 'POST'], endpoint='admin_authenticate')
 def admin_authenticate():
     if request.method=='POST':
-        u = request.form.get("usrname")
-        p = request.form.get("passw")
-        if u == "username":
-            if p == "password":
-                return (redirect(url_for('admin_homepage')))
+        admin_log_info = provide()
+        action = request.form.get("action")
+        if action=='Login':
+            u = request.form.get("usrname")
+            p = request.form.get("passw")
+            if u == admin_log_info["username"]:
+                if p == admin_log_info["password"]:
+                    return (redirect(url_for('admin_homepage')))
+                else:
+                    return(render_template('admin-auth.html', log_message="Incorrect Password"))
             else:
-                return(render_template('admin-auth.html', log_message="Incorrect Password"))
-        else:
-                return(render_template('admin-auth.html', log_message="Incorrect Username"))
+                    return(render_template('admin-auth.html', log_message="Incorrect Username"))
+        elif action=='Change Credentials':
+            return(redirect(url_for('admin_change')))         
     else:
         return(render_template('admin-auth.html', log_message="Welcome! Please enter credentials"))
 
-@app.route('/admin/home')
-def admin_homepage():
-    return(render_template('admin-home.html'))
+@app.route('/admin/authenticate/change', methods=['GET', 'POST'])
+def admin_change():
+    if request.method=='POST':
+        admin_log_info=provide()
+        uname = request.form.get("usrname")
+        pword = request.form.get("passw")
+        admin_log_info["username"] = request.form.get("usrname")
+        admin_log_info["password"] = request.form.get("passw")
+        put(admin_log_info)
+        return(redirect(url_for('admin_authenticate')))
+    else:
+        return(render_template('admin-change.html'))
 
-@app.route('/admin/add', methods=['GET', 'POST'])
+@app.route('/admin/home', methods=['GET', 'POST'])
+def admin_homepage():
+    if request.method=='POST':
+        action = request.form.get("action")
+        return(redirect(url_for(f"{action}")))
+        # return(action)
+    else:
+        return(render_template('admin-home.html'))
+
+@app.route('/admin/add', methods=['GET', 'POST'], endpoint='add_product_page')
 def add_product_page(messg="Item deleted successfully!"):
     if request.method=='POST':
         P_details = request.form.to_dict()
@@ -95,7 +128,7 @@ def add_product_page(messg="Item deleted successfully!"):
     else:
         return render_template(f'admin-add.html', welcome_message="Welcome!")
 
-@app.route('/admin/view', methods=['GET', 'POST'])
+@app.route('/admin/view', methods=['GET', 'POST'], endpoint='view_page')
 def view_page(messg="Welcome"):
     if request.method=='POST':
         P_id = request.form.get("product_id")
@@ -134,9 +167,6 @@ def edit_product(pid):
         field_names = ['Product Name', 'Price', 'Ingridient Information', 'Product Type', 'Description', 'Image Link']
         product_dict = dict(zip(field_names, x))
         return(render_template('admin-edit.html', pid=pid, msg=product_dict))
-
-
-
 
 
 # testing purposes

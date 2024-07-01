@@ -7,8 +7,22 @@ Admin Page
 
 {% endblock %}
 
+
 {% block content %}
 
 <h1>{{ welcome_message }}</h1>
 
+{%block dropdown%}
+
+<form action="" method="POST">
+    <select name="action">
+        <option value="None" selected disabled>Choose an action</option>
+        <option value="view_page">Manage Products</option>
+        <option value="add_product_page">Add Products</option>
+        <option value="admin_authenticate">Logout</option>
+    </select>    
+    <input type="submit" value="Submit">
+</form>
+
+{%endblock%}
 {% endblock %}
