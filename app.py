@@ -99,13 +99,16 @@ def admin_authenticate():
 @app.route('/admin/authenticate/change', methods=['GET', 'POST'], endpoint='Change Credentials')
 def admin_change():
     if request.method=='POST':
-        admin_log_info=provide()
-        uname = request.form.get("usrname")
-        pword = request.form.get("passw")
-        admin_log_info["username"] = request.form.get("usrname")
-        admin_log_info["password"] = request.form.get("passw")
-        put(admin_log_info)
-        return(redirect(url_for('admin_authenticate')))
+        if request.form.get('action')=='Home':
+            return(redirect(url_for('admin_homepage')))
+        else:
+            admin_log_info=provide()
+            uname = request.form.get("usrname")
+            pword = request.form.get("passw")
+            admin_log_info["username"] = request.form.get("usrname")
+            admin_log_info["password"] = request.form.get("passw")
+            put(admin_log_info)
+            return(redirect(url_for('admin_authenticate')))
     else:
         return(render_template('admin-change.html'))
 
@@ -121,9 +124,12 @@ def admin_homepage():
 @app.route('/admin/add', methods=['GET', 'POST'], endpoint='Add Products')
 def add_product_page(messg="Item deleted successfully!"):
     if request.method=='POST':
-        P_details = request.form.to_dict()
-        o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
-        return(render_template('admin-home.html', welcome_message=o_p))
+        if request.form.get('action')=='Home':
+            return(redirect(url_for('admin_homepage')))
+        else:
+            P_details = request.form.to_dict()
+            o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
+            return(render_template('admin-home.html', welcome_message=o_p))
 
     else:
         return render_template(f'admin-add.html', welcome_message="Welcome!")
@@ -135,9 +141,10 @@ def view_page(messg="Welcome"):
         action = request.form.get("action")
         if action == 'delete':
             return(redirect(url_for('del_product', pid=P_id)))
-        if action == 'edit':
+        elif action == 'edit':
             return(redirect(url_for('edit_product', pid=P_id)))
-        
+        elif action=='Home':
+            return(redirect(url_for('admin_homepage')))
         elif action == 'apply':
             # F_veg = request.form.get("isVeg")
             # F_type = request.form.get("type")
@@ -158,10 +165,13 @@ def del_product(pid):
 @app.route('/admin/edit/<string:pid>', methods=["POST", "GET"])
 def edit_product(pid):
     if request.method=='POST':
-        product_meta = request.form.to_dict()
-        db_message = edit_products(p_id=pid, p_name=product_meta["Product Name"], price=product_meta["Price"], desc=product_meta["Description"], veg=product_meta["Ingridient Information"], type=product_meta["Product Type"], imgL=product_meta["Image Link"])
-        # return(request.form.to_dict())
-        return(redirect(url_for('view_page', messg=db_message)))
+        if request.form.get('action')=='Back':
+            return(redirect(url_for('view_page')))
+        else:
+            product_meta = request.form.to_dict()
+            db_message = edit_products(p_id=pid, p_name=product_meta["Product Name"], price=product_meta["Price"], desc=product_meta["Description"], veg=product_meta["Ingridient Information"], type=product_meta["Product Type"], imgL=product_meta["Image Link"])
+            # return(request.form.to_dict())
+            return(redirect(url_for('view_page', messg=db_message)))
     else:
         x = show_product(pid)
         field_names = ['Product Name', 'Price', 'Ingridient Information', 'Product Type', 'Description', 'Image Link']
