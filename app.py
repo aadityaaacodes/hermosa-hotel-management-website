@@ -4,6 +4,8 @@ from admin_functions import add_product, rem_product, show_products, filter_prod
 import json
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = "keylogger69"
+
 
 # Client-side routes
 
@@ -67,6 +69,7 @@ def delete_account(username):
 
 # Admin-side routes 
 
+
 # using a dynamic json file to store changes to admin credentials
 admin_info_path = 'admin_login_info.json'
 def provide():
@@ -86,6 +89,7 @@ def admin_authenticate():
             p = request.form.get("passw")
             if u == admin_log_info["username"]:
                 if p == admin_log_info["password"]:
+                    session["admin"] = "True"
                     return (redirect(url_for('admin_homepage')))
                 else:
                     return(render_template('admin-auth.html', log_message="Incorrect Password"))
@@ -114,48 +118,59 @@ def admin_change():
 
 @app.route('/admin/home', methods=['GET', 'POST'])
 def admin_homepage():
-    if request.method=='POST':
-        action = request.form.get("action")
-        return(redirect(url_for(f"{action}")))
-        # return(action)
+    if session["admin"] == "True":
+        if request.method=='POST':
+            action = request.form.get("action")
+            if action == "Logout":
+                session["admin"] = "False"
+            return(redirect(url_for(f"{action}")))
+            # return(action)
+        else:
+            return(render_template('admin-home.html'))
     else:
-        return(render_template('admin-home.html'))
+        return(redirect(url_for('Logout')))
 
 @app.route('/admin/add', methods=['GET', 'POST'], endpoint='Add Products')
 def add_product_page(messg="Item deleted successfully!"):
-    if request.method=='POST':
-        if request.form.get('action')=='Home':
-            return(redirect(url_for('admin_homepage')))
-        else:
-            P_details = request.form.to_dict()
-            o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
-            return(render_template('admin-home.html', welcome_message=o_p))
+    if session["admin"] == "True":
+        if request.method=='POST':
+            if request.form.get('action')=='Home':
+                return(redirect(url_for('admin_homepage')))
+            else:
+                P_details = request.form.to_dict()
+                o_p = add_product(P_details["name"], P_details["price"], P_details["description"], P_details["veg"], P_details["type"], P_details["image_link"])
+                return(render_template('admin-home.html', welcome_message=o_p))
 
+        else:
+            return render_template(f'admin-add.html', welcome_message="Welcome!")
     else:
-        return render_template(f'admin-add.html', welcome_message="Welcome!")
+        return(redirect(url_for('Logout')))
 
 @app.route('/admin/view', methods=['GET', 'POST'], endpoint='Manage Products')
 def view_page(messg="Welcome"):
-    if request.method=='POST':
-        P_id = request.form.get("product_id")
-        action = request.form.get("action")
-        if action == 'delete':
-            return(redirect(url_for('del_product', pid=P_id)))
-        elif action == 'edit':
-            return(redirect(url_for('edit_product', pid=P_id)))
-        elif action=='Home':
-            return(redirect(url_for('admin_homepage')))
-        elif action == 'apply':
-            # F_veg = request.form.get("isVeg")
-            # F_type = request.form.get("type")
-            res = filter_products(c1=request.form.get("c1"), c2=request.form.get("c2"), c3=request.form.get("c3"), c4=request.form.get("c4"), c5=request.form.get("c5"), c6=request.form.get("isVeg"), c7=request.form.get("type"))
-            # return(f"{F_veg}, {F_type}")
-            return render_template(f'admin-view.html', P_table=res, msg="Welcome!")        
-        
+    if session["admin"] == "True":
+        if request.method=='POST':
+            P_id = request.form.get("product_id")
+            action = request.form.get("action")
+            if action == 'delete':
+                return(redirect(url_for('del_product', pid=P_id)))
+            elif action == 'edit':
+                return(redirect(url_for('edit_product', pid=P_id)))
+            elif action=='Home':
+                return(redirect(url_for('admin_homepage')))
+            elif action == 'apply':
+                # F_veg = request.form.get("isVeg")
+                # F_type = request.form.get("type")
+                res = filter_products(c1=request.form.get("c1"), c2=request.form.get("c2"), c3=request.form.get("c3"), c4=request.form.get("c4"), c5=request.form.get("c5"), c6=request.form.get("isVeg"), c7=request.form.get("type"))
+                # return(f"{F_veg}, {F_type}")
+                return render_template(f'admin-view.html', P_table=res, msg="Welcome!")        
+            
+        else:
+            x = show_products()
+            return render_template(f'admin-view.html', P_table=x, msg=messg)
     else:
-        x = show_products()
-        return render_template(f'admin-view.html', P_table=x, msg=messg)
-        
+        return(redirect(url_for('Logout')))
+
 @app.route('/admin/delete/<string:pid>')
 def del_product(pid):
     # return(render_template('test.html', message=pid))
