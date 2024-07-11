@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<form action="", method="POST">
+    <div>
+        <input placeholder="Phone Number", type="text", name="Phone Number">
+        <input placeholder="Email" type="text", name="Email">
+    </div>
+
+    <div>
+        <input placeholder="First Name", type="text", name="First Name">
+        <input placeholder="Middle Name", type="text" name="Middle Name">
+        <input placeholder="Last Name", type="text", name="Last Name">
+    </div>
+
+    <div>
+        <input value="Register", type="submit", name="Register">
+    </div>
+    <div>
+        <a href="{{url_for('admin_homepage')}}">Return</a>
+    </div>
+</form>
+
+<div>
+    <p> 
+        <strong>
+            {{reg_message}}
+        </strong>
+    </p>
+<div>
+    
+{% endblock %}

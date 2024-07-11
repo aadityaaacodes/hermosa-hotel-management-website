@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
-from mysql_accessor import verify, authenticate, searchName, registration, get_info, delete_my_account
+from mysql_accessor import verify, authenticate, searchName, get_info, delete_my_account
 from admin_functions import add_product, rem_product, show_products, filter_products, show_product, edit_products
+from cust_functions import registration
 import json
 
 app = Flask(__name__)
@@ -11,7 +12,7 @@ app.config['SECRET_KEY'] = "keylogger69"
 
 @app.route('/')
 def welcomePage():
-    return(render_template('login.html', login_message="Welcome to Banerjee's Kitchen"))
+    return(render_template('login.html', login_message="Welcome to Hermosa The Hotel"))
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -37,25 +38,32 @@ def show_data(username):
     user = searchName(username)
     return(render_template('homepage.html', nameofUser=user, username=username))
 
-@app.route('/register', methods=['GET', 'POST'])
+
+# customer-side routes
+
+
+@app.route('/user/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # if request.form['log'] == 'login':
-        #     return (render_template('login.html'))
-        uname = request.form["username"]
-        passw = request.form["password"]
-        fname = request.form["First Name"]
-        lname = request.form["Last Name"]
-        city = request.form["City"]
-        country = request.form["Country"]
-        if uname == '' or passw == '' or fname =='' or lname =='':
+        pno = (int)(request.form["Phone Number"])
+        fn = request.form["First Name"]
+        mn = request.form["Middle Name"]
+        ln = request.form["Last Name"]
+        mail = request.form["Email"]
+        if pno == '' or fn == '' or ln == '':
             msg = "Fill all the values"
         else:
-            msg = registration(uname, passw, fname, lname, city, country)
-        return(render_template('register.html', reg_message=msg))
+            msg = registration(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
+        return(render_template('user-register.html', reg_message=msg))
     else:
-        return(render_template('register.html'))
+        return(render_template('user-register.html'))
     
+
+
+
+
+
+
 @app.route('/profile/<username>')
 def profile_page(username):
     pass
