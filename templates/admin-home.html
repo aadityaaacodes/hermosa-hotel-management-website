@@ -12,14 +12,13 @@ Admin Page
 
 <h1>{{ welcome_message }}</h1>
 
-{%block dropdown%}
-
 <form action="" method="POST">
     <input type="submit" name="action" value="Manage Products">
     <input type="submit" name="action" value="Add Products">
     <input type="submit" name="action" value="Change Credentials">
+    <input type="submit" name="action" value="Order Taking">
+    <input type="submit" name="action" value="Billing History">    
     <input type="submit" name="action" value="Logout">
 </form>
 
-{%endblock%}
 {% endblock %}

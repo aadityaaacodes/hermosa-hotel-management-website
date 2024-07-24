@@ -44,25 +44,22 @@ def show_data(username):
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        pno = (int)(request.form["Phone Number"])
-        fn = request.form["First Name"]
-        mn = request.form["Middle Name"]
-        ln = request.form["Last Name"]
-        mail = request.form["Email"]
-        if pno == '' or fn == '' or ln == '':
-            msg = "Fill all the values"
+    if session["admin"] == "True":
+        if request.method == 'POST':
+            pno = (int)(request.form["Phone Number"])
+            fn = request.form["First Name"]
+            mn = request.form["Middle Name"]
+            ln = request.form["Last Name"]
+            mail = request.form["Email"]
+            if pno == '' or fn == '' or ln == '':
+                msg = "Fill all the values"
+            else:
+                msg = registration(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
+            return(render_template('user-register.html', reg_message=msg))
         else:
-            msg = registration(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
-        return(render_template('user-register.html', reg_message=msg))
+            return(render_template('user-register.html'))
     else:
-        return(render_template('user-register.html'))
-    
-
-
-
-
-
+        return(redirect(url_for('admin_homepage')))
 
 @app.route('/profile/<username>')
 def profile_page(username):
@@ -77,7 +74,6 @@ def delete_account(username):
 
 # Admin-side routes 
 
-
 # using a dynamic json file to store changes to admin credentials
 admin_info_path = 'admin_login_info.json'
 def provide():
@@ -87,7 +83,7 @@ def put(log_info):
     with open(admin_info_path, 'w') as file:
         return json.dump(log_info, file)
 
-@app.route('/admin/authenticate', methods=['GET', 'POST'], endpoint='Logout')
+@app.route('/authenticate', methods=['GET', 'POST'], endpoint='Logout')
 def admin_authenticate():
     if request.method=='POST':
         admin_log_info = provide()
@@ -108,15 +104,13 @@ def admin_authenticate():
     else:
         return(render_template('admin-auth.html', log_message="Welcome! Please enter credentials"))
 
-@app.route('/admin/authenticate/change', methods=['GET', 'POST'], endpoint='Change Credentials')
+@app.route('/authenticate/change', methods=['GET', 'POST'], endpoint='Change Credentials')
 def admin_change():
     if request.method=='POST':
         if request.form.get('action')=='Home':
             return(redirect(url_for('admin_homepage')))
         else:
             admin_log_info=provide()
-            uname = request.form.get("usrname")
-            pword = request.form.get("passw")
             admin_log_info["username"] = request.form.get("usrname")
             admin_log_info["password"] = request.form.get("passw")
             put(admin_log_info)
@@ -124,7 +118,7 @@ def admin_change():
     else:
         return(render_template('admin-change.html'))
 
-@app.route('/admin/home', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def admin_homepage():
     if session["admin"] == "True":
         if request.method=='POST':
@@ -138,7 +132,7 @@ def admin_homepage():
     else:
         return(redirect(url_for('Logout')))
 
-@app.route('/admin/add', methods=['GET', 'POST'], endpoint='Add Products')
+@app.route('/add', methods=['GET', 'POST'], endpoint='Add Products')
 def add_product_page(messg="Item deleted successfully!"):
     if session["admin"] == "True":
         if request.method=='POST':
@@ -154,7 +148,7 @@ def add_product_page(messg="Item deleted successfully!"):
     else:
         return(redirect(url_for('Logout')))
 
-@app.route('/admin/view', methods=['GET', 'POST'], endpoint='Manage Products')
+@app.route('/view', methods=['GET', 'POST'], endpoint='Manage Products')
 def view_page(messg="Welcome"):
     if session["admin"] == "True":
         if request.method=='POST':
@@ -179,13 +173,13 @@ def view_page(messg="Welcome"):
     else:
         return(redirect(url_for('Logout')))
 
-@app.route('/admin/delete/<string:pid>')
+@app.route('/delete/<string:pid>')
 def del_product(pid):
     # return(render_template('test.html', message=pid))
     rem_product(pid)
     return(redirect((url_for('view_page', messg='Product removed successfully'))))
 
-@app.route('/admin/edit/<string:pid>', methods=["POST", "GET"])
+@app.route('/edit/<string:pid>', methods=["POST", "GET"])
 def edit_product(pid):
     if request.method=='POST':
         if request.form.get('action')=='Back':
@@ -201,6 +195,18 @@ def edit_product(pid):
         product_dict = dict(zip(field_names, x))
         return(render_template('admin-edit.html', pid=pid, msg=product_dict))
 
+#taking orders
+@app.route('/admin/order', methods=["POST", "GET"], endpoint='Order Taking') 
+def take_order():
+    if session["admin"] == "True":
+        return(render_template('admin-order.html'))
+    else:
+        return(redirect(url_for('Logout')))
+
+@app.route('/admin/billing', methods=['POST', 'GET'], endpoint="Billing History")
+def show_history():
+    return(render_template('admin-billing.html'))
+
 
 # testing purposes
 @app.route('/test/<func>', methods=['GET', 'POST'])
@@ -211,6 +217,12 @@ def test_forms(func):
         # return(render_template('test.html', message=PName))
     else:
         return(render_template(f'admin-{func}.html'))
+
+
+@app.route('/order-management/<tid>/<uid>')
+def order_taking(uid, tid):
+    return(render_template('order.html', uid=uid, tid=tid))
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=9000)
