@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+Billing History 
+
+{% endblock %}
+
+{% block content %}
+
+<table>
+    <thead>
+        <tr>
+            <td>Bill ID</td>
+            <td>Date</td>
+            <td>Phone Number</td>
+            <td>Amount</td>
+            <td>Method of Payment</td>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <form action="" method="POST">
+                <td>
+                    <input type="submit" name="send", value="APPLY">
+                    <input type="submit" name="send" value="CLEAR">
+                </td>
+                <td>
+                    <select name="date">
+                        <option selected value="">None</option>
+                        <option value="DESC">Higher-Lower</option>
+                        <option value="ASC">Lower-Higher</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="phno">
+                        <option selected value="">None</option>
+                        <option value="DESC">Higher-Lower</option>
+                        <option value="ASC">Lower-Higher</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="amt">
+                        <option selected value="">None</option>
+                        <option value="DESC">Higher-Lower</option>
+                        <option value="ASC">Lower-Higher</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="type">
+                        <option selected value="">None</option>
+                        <option value="CASH">Cash</option>
+                        <option value="CARD">CARD</option>
+                        <option value="UPI">UPI</option>
+                    </select>
+                </td>
+            </form>
+        </tr>
+            {% for item in P_table %}
+    <tr>
+      <td>{{ item[0] }}</td>  
+      <td> {{item[4] }}</td>
+      <td>{{ item[1] }}</td>  
+      <td>{{ item[2] }}</td>  
+      <td>{{ item[3] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

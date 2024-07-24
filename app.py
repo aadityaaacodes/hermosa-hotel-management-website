@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, get_info, delete_my_account
 from admin_functions import add_product, rem_product, show_products, filter_products, show_product, edit_products
 from cust_functions import registration
+from order_functions import makeBill, histBill
 import json
 
 app = Flask(__name__)
@@ -10,9 +11,6 @@ app.config['SECRET_KEY'] = "keylogger69"
 
 # Client-side routes
 
-@app.route('/')
-def welcomePage():
-    return(render_template('login.html', login_message="Welcome to Hermosa The Hotel"))
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
@@ -40,10 +38,8 @@ def show_data(username):
 
 
 # customer-side routes
-
-
 @app.route('/user/register', methods=['GET', 'POST'])
-def register():
+def user_register():
     if session["admin"] == "True":
         if request.method == 'POST':
             pno = (int)(request.form["Phone Number"])
@@ -83,7 +79,7 @@ def put(log_info):
     with open(admin_info_path, 'w') as file:
         return json.dump(log_info, file)
 
-@app.route('/authenticate', methods=['GET', 'POST'], endpoint='Logout')
+@app.route('/', methods=['GET', 'POST'], endpoint='Logout')
 def admin_authenticate():
     if request.method=='POST':
         admin_log_info = provide()
@@ -94,7 +90,7 @@ def admin_authenticate():
             if u == admin_log_info["username"]:
                 if p == admin_log_info["password"]:
                     session["admin"] = "True"
-                    return (redirect(url_for('admin_homepage')))
+                    return (redirect(url_for('Home')))
                 else:
                     return(render_template('admin-auth.html', log_message="Incorrect Password"))
             else:
@@ -118,7 +114,7 @@ def admin_change():
     else:
         return(render_template('admin-change.html'))
 
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'], endpoint="Home")
 def admin_homepage():
     if session["admin"] == "True":
         if request.method=='POST':
@@ -195,6 +191,43 @@ def edit_product(pid):
         product_dict = dict(zip(field_names, x))
         return(render_template('admin-edit.html', pid=pid, msg=product_dict))
 
+@app.route('/billing', methods=['GET', 'POST'], endpoint='Billing')
+def billing():
+    if request.method=='POST':
+        if request.form.get("send")=='Submit':
+            date = request.form.get("date")
+            phno = request.form.get("phno")
+            amt = request.form.get("amt")
+            type = request.form.get("type")
+            res = makeBill(phno=phno, amt=amt, type=type, date=date)
+            return(redirect(url_for('Billing')))
+        else:
+            page = request.form.get("pages")
+            return(redirect(url_for(f'{page}')))
+
+    elif request.method=='GET':
+        return(render_template('admin-billing.html'))
+
+@app.route('/billing/history', methods=['GET', 'POST'], endpoint='Billing History')
+def billHistory():
+    if request.method=='POST':
+        if request.form.get("send")=='APPLY':
+            a = histBill(date=request.form.get("date"), 
+                         phno=request.form.get("phno"), 
+                         amt=request.form.get("amt"),
+                         type=request.form.get("type"))
+            return(render_template('admin-billing-history.html', P_table=a))
+        if request.form.get("send")=='CLEAR':
+            a = histBill()
+            return(render_template('admin-billing-history.html', P_table=a))
+    elif request.method=='GET':
+        return(render_template('admin-billing-history.html', P_table=histBill()))
+
+
+@app.route('/customer-history', methods=['GET', 'POST'])
+def view_customers():
+    pass
+
 #taking orders
 @app.route('/admin/order', methods=["POST", "GET"], endpoint='Order Taking') 
 def take_order():
@@ -202,11 +235,6 @@ def take_order():
         return(render_template('admin-order.html'))
     else:
         return(redirect(url_for('Logout')))
-
-@app.route('/admin/billing', methods=['POST', 'GET'], endpoint="Billing History")
-def show_history():
-    return(render_template('admin-billing.html'))
-
 
 # testing purposes
 @app.route('/test/<func>', methods=['GET', 'POST'])

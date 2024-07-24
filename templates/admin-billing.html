@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+Billing Page 
+
+{% endblock %}
+
+
+{% block content %}
+
+<form action="" method="POST">   
+    <input type="submit" name="pages" value="Home">
+</form>
+
+<h1>Billing</h1>
+
+<form method="POST">
+    <input type="submit" name="pages" value="Billing History">
+</form>
+
+
+<h2>{{billmessage}}</h2>
+
+<form action="" method="POST">
+    <input type="date" name="date" placeholder="Date">
+    <input type="text" name="phno" placeholder="Phone Number">
+    <input type="text" name="amt" placeholder="Amount">
+    <select name="type">
+        <option disabled selected>Choose Method of Payment</option>
+        <option>CASH</option>
+        <option>CARD</option>
+        <option>UPI</option>
+    </select>
+    <input type="submit" name="send">
+</form>
+
+
+
+{% endblock %}
