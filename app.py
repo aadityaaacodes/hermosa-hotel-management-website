@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, session, url_for, redirect
-from mysql_accessor import verify, authenticate, searchName, get_info, delete_my_account
 from admin_functions import add_product, rem_product, show_products, show_product, edit_products
 from cust_functions import registration, getInfo, userHistory, update
 from order_functions import makeBill, histBill
@@ -7,68 +6,6 @@ import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "keylogger69"
-
-
-# Client-side routes
-
-
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        #collecting values from the form
-        uname = request.form["username"]
-        passw = request.form["password"]
-        if not uname == '':
-            if verify(uname):   #checking username
-                if authenticate(uname) == passw:    #checking password
-                    return redirect (url_for('show_data', username=uname))  #redirecting to homepage
-                else:
-                    return (render_template('login.html', login_message = "Incorrect password"))
-            else:
-                return (render_template('login.html', login_message = "Username doesn't exist")) 
-        else:
-            return (render_template('login.html', login_message = "Enter valid username")) 
-    else:
-        return (render_template(('login.html')))
-
-@app.route('/homepage/<string:username>')
-def show_data(username):
-    user = searchName(username)
-    return(render_template('homepage.html', nameofUser=user, username=username))
-
-# customer-side routes
-@app.route('/user/register', methods=['GET', 'POST'], endpoint="Customer Registration")
-def user_register():
-    if request.method == 'POST':
-        if request.form.get("Register")=="Register":
-            pno = (int)(request.form["Phone Number"])
-            fn = request.form["First Name"]
-            mn = request.form["Middle Name"]
-            ln = request.form["Last Name"]
-            mail = request.form["Email"]
-            if pno == '' or fn == '' or ln == '':
-                msg = "Fill all the values"
-            else:
-                msg = registration(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
-            return(render_template('user-register.html', reg_message=msg))
-        elif request.form.get("Register")=="HOME":
-            return(redirect(url_for("Home")))
-    else:
-        if session["phno"]:
-            return(render_template('user-register.html', cond="True", phNo=session["phno"]))
-        else:
-            return(render_template('user-register.html', cond="False"))
-
-
-@app.route('/profile/<username>')
-def profile_page(username):
-    pass
-
-@app.route('/profile/<username>/delete')
-def delete_account(username):
-    msg = (delete_my_account(username))
-    msg = msg[0]
-    return(redirect(url_for('login', page_title="Admin")))
 
 
 # Admin-side routes 
@@ -276,6 +213,31 @@ def billHistory():
         else:
             return(render_template('admin-billing-history.html', P_table=histBill()))
 
+
+# Customer-side routes
+
+@app.route('/customer/register', methods=['GET', 'POST'], endpoint="Customer Registration")
+def user_register():
+    if request.method == 'POST':
+        if request.form.get("Register")=="Register":
+            pno = (int)(request.form["Phone Number"])
+            fn = request.form["First Name"]
+            mn = request.form["Middle Name"]
+            ln = request.form["Last Name"]
+            mail = request.form["Email"]
+            if pno == '' or fn == '' or ln == '':
+                msg = "Fill all the values"
+            else:
+                msg = registration(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
+            return(render_template('user-register.html', reg_message=msg))
+        elif request.form.get("Register")=="HOME":
+            return(redirect(url_for("Home")))
+    else:
+        if session["phno"]:
+            return(render_template('user-register.html', cond="True", phNo=session["phno"]))
+        else:
+            return(render_template('user-register.html', cond="False"))
+
 @app.route('/customer/information', methods = ['POST', 'GET'], endpoint="Customer")
 def customer_info():
     if request.method == 'POST':
@@ -317,18 +279,6 @@ def customerEdit():
             return(redirect(url_for("Customer")))
     else:
         return(render_template('customer-edit.html', pack=getInfo(session["phno"])))
-
-
-
-# testing purposes
-@app.route('/test/<func>', methods=['GET', 'POST'])
-def test_forms(func):
-    if request.method=='POST':
-        PName = request.form["name"]
-        return(render_template('test.html', message=PName))
-        # return(render_template('test.html', message=PName))
-    else:
-        return(render_template(f'admin-{func}.html'))
 
 
 if __name__ == '__main__':
