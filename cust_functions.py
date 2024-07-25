@@ -70,8 +70,3 @@ def update(pno, fn, mn, ln, mail):
     cursor.close()
     db.close()
     return(f"{result}")
-
-
-# print(userHistory(phno=8169987004))
-
-# print(registration())

@@ -1,5 +1,7 @@
 import mysql.connector
 
+#Cart functions
+
 def empty_cart():
     db = mysql.connector.connect(
         host = "localhost", 
@@ -55,6 +57,7 @@ def del_item(p_id):
 
 
 #Billing functions
+
 def makeBill(phno, amt, type, date):
     db = mysql.connector.connect(
         host = "localhost", 
@@ -74,12 +77,6 @@ def makeBill(phno, amt, type, date):
     else: 
         return("Error")
 
-def getBill():
-    pass
-
-def viewBill():
-    pass
-
 def histBill(date='', phno='', amt='', type=''):
     db = mysql.connector.connect(
         host = "localhost", 
@@ -92,8 +89,6 @@ def histBill(date='', phno='', amt='', type=''):
 
     sequence = []
     q1="SELECT * FROM bill_table"
-    # q2="ORDER BY"
-
     q2=""
     q3="WHERE type="
     
@@ -127,9 +122,3 @@ def histBill(date='', phno='', amt='', type=''):
     cursor.close()
     db.close()
     return(result)
-
-# print(histBill(amt='DESC', type='UPI'))
-# print(histBill())
-# del_item(1)
-# fill_cart(6, 100, 1)
-# empty_cart()

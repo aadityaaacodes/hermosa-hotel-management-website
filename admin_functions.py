@@ -124,11 +124,6 @@ def edit_products(p_id, p_name, price, desc, veg, type, imgL):
         cursor.close()
         db.close()
         return(f"Error in Adding Product: {err}")
-    db.commit()
-    result = cursor.fetchall()
-    cursor.close()
-    db.close()
-    return(result)
 
 def show_product(pid):
     db = mysql.connector.connect(
@@ -145,25 +140,3 @@ def show_product(pid):
     cursor.close()
     db.close()
     return(result)
-
-
-
-print((show_product("19")))
-# testing comments:
-# (show_products(isVeg='Non-Veg', type='Dessert', price='ASC', rating='DESC'))
-# print(show_products(type='Food'))
-# (show_products(pid="",p_name="ASC", 
-#                                     price="DESC", 
-#                                     rating="", 
-#                                     frequency="", 
-#                                     isVeg="", 
-#                                     type="Dessert"))
-# print(a)
-# for i in show_product(37):
-#     print(i)
-# for i in filter_products(c1="DESC", c2="ASC", c6="Vegetarian", c7="Beverage"):
-#     print(i)
-# x = show_products()
-# print(x)
-# add_product("Biryani", 98, "BKL Chutiya", "Vegetarian", "www.google.com")
-# rem_product(3)
