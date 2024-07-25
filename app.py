@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, get_info, delete_my_account
-from admin_functions import add_product, rem_product, show_products, filter_products, show_product, edit_products
+from admin_functions import add_product, rem_product, show_products, show_product, edit_products
 from cust_functions import registration
 from order_functions import makeBill, histBill
 import json
@@ -35,7 +35,6 @@ def login():
 def show_data(username):
     user = searchName(username)
     return(render_template('homepage.html', nameofUser=user, username=username))
-
 
 # customer-side routes
 @app.route('/user/register', methods=['GET', 'POST'])
@@ -149,23 +148,35 @@ def view_page(messg="Welcome"):
     if session["admin"] == "True":
         if request.method=='POST':
             P_id = request.form.get("product_id")
-            action = request.form.get("action")
-            if action == 'delete':
+            send = request.form.get("send")
+            if send == 'delete':
                 return(redirect(url_for('del_product', pid=P_id)))
-            elif action == 'edit':
+            elif send == 'edit':
                 return(redirect(url_for('edit_product', pid=P_id)))
-            elif action=='Home':
+            elif send=='Home':
                 return(redirect(url_for('admin_homepage')))
-            elif action == 'apply':
-                # F_veg = request.form.get("isVeg")
-                # F_type = request.form.get("type")
-                res = filter_products(c1=request.form.get("c1"), c2=request.form.get("c2"), c3=request.form.get("c3"), c4=request.form.get("c4"), c5=request.form.get("c5"), c6=request.form.get("isVeg"), c7=request.form.get("type"))
-                # return(f"{F_veg}, {F_type}")
-                return render_template(f'admin-view.html', P_table=res, msg="Welcome!")        
+            elif request.form.get("action") == 'APPLY':
+                # res = show_products(pid=request.form.get("pid"),
+                #                     p_name=request.form.get("pname"), 
+                #                     price=request.form.get("price"), 
+                #                     rating=request.form.get("rating"), 
+                #                     frequency=request.form.get("frequency"), 
+                #                     isVeg=request.form.get("isVeg"), 
+                #                     type=request.form.get("type"))
+                res = show_products(p_name=request.form.get("pname"), 
+                                    price=request.form.get("price"), 
+                                    rating=request.form.get("rating"), 
+                                    frequency=request.form.get("frequency"), 
+                                    isVeg=request.form.get("isVeg"), 
+                                    type=request.form.get("type"))
+                # return(res)
+                return(render_template('admin-view.html', P_table=res))
+            elif request.form.get("action")=='CLEAR':
+                res = show_products()
+                return render_template(f'admin-view.html', P_table=res)        
             
         else:
-            x = show_products()
-            return render_template(f'admin-view.html', P_table=x, msg=messg)
+            return render_template(f'admin-view.html', P_table=show_products(), msg=messg)
     else:
         return(redirect(url_for('Logout')))
 
