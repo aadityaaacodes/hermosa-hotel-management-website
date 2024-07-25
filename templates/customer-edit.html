@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+Admin Page
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<form action="", method="POST">
+    <input type="submit" name="Register" value="BACK">
+    <h1>
+        Edit Customer Information
+    </h1>
+    <div>
+        <input placeholder="Phone Number", type="text", name="Phone Number", value="{{pack[0]}}">
+        <input placeholder="Email" type="text", name="Email", value="{{pack[4]}}">
+    </div>
+
+    <div>
+        <input placeholder="First Name", type="text", name="First Name", value="{{pack[1]}}">
+        <input placeholder="Middle Name", type="text" name="Middle Name", value="{{pack[2]}}">
+        <input placeholder="Last Name", type="text", name="Last Name", value="{{pack[3]}}">
+    </div>
+
+    <div>
+        <input value="Confirm", type="submit", name="Register">
+    </div>
+
+    <h4>{{msg}}</h4>
+</form>
+
+<div>
+    <p> 
+        <strong>
+            {{reg_message}}
+        </strong>
+    </p>
+<div>
+    
+
+{% endblock %}

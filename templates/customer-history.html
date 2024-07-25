@@ -10,10 +10,30 @@ Customer History
 
 {% block content %}
 
-<h1>{{ messg }}</h1>
+<h1>Order History of {{phno}}</h1>
 
 <form method="POST">
     <input type="submit" name="page" value="BACK">
 </form>
+
+<table>
+    <thead>
+        <tr>
+            <td>Date</td>
+            <td>Amount</td>
+            <td>Method of Payment</td>
+        </tr>
+    </thead>
+
+    <tbody>
+            {% for item in P_table %}
+    <tr>
+      <td>{{ item[0] }}</td>  
+      <td>{{item[1]}}</td>
+      <td>{{ item[2] }}</td>  
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}

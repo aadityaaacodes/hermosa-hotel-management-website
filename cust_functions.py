@@ -48,7 +48,7 @@ def userHistory(phno):
         database = "banerjee_kitchen"
     )
     cursor = db.cursor()
-    sql = f"SELECT b.date, b.PHNO, b.amt, b.type FROM bill_table as b WHERE b.PHNO={int(phno)};"
+    sql = f"SELECT b.date, b.amt, b.type FROM bill_table as b WHERE b.PHNO={int(phno)} ORDER BY b.date ASC;"
     cursor.execute(sql)
     result = cursor.fetchall()
     cursor.close()
@@ -63,18 +63,15 @@ def update(pno, fn, mn, ln, mail):
         database = "banerjee_kitchen"
     )
     cursor = db.cursor()
-    sql1 = (f"INSERT INTO customer_info (`ph_no`, `cust_fname`, `cust_mname`, `cust_lname`, `email`) VALUES (%s, %s, %s, %s, %s);")
-    try:
-        cursor.execute(sql1, (pno, fn, mn, ln, mail))
-        db.commit()
-        cursor.close()
-        db.close()
-        return(f"Account already exists!")
+    sql1 = f"UPDATE customer_info SET ph_no = %s, cust_fname = %s, cust_mname = %s, cust_lname = %s, email = %s WHERE ph_no = %s;"
+    cursor.execute(sql1, (pno, fn, mn, ln, mail, pno))
+    result = cursor.fetchall()
+    db.commit()
+    cursor.close()
+    db.close()
+    return(f"{result}")
 
-    except IntegrityError as err:
-        # Step 5: Handle the integrity error
-        cursor.close()
-        db.close()
-        return(f"Username already taken")
 
-print(userHistory(phno=8169987004))
+# print(userHistory(phno=8169987004))
+
+# print(registration())

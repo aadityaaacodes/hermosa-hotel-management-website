@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, get_info, delete_my_account
 from admin_functions import add_product, rem_product, show_products, show_product, edit_products
-from cust_functions import registration, getInfo
+from cust_functions import registration, getInfo, userHistory, update
 from order_functions import makeBill, histBill
 import json
 
@@ -37,7 +37,7 @@ def show_data(username):
     return(render_template('homepage.html', nameofUser=user, username=username))
 
 # customer-side routes
-@app.route('/user/register', methods=['GET', 'POST'], endpoint="Register")
+@app.route('/user/register', methods=['GET', 'POST'], endpoint="Customer Registration")
 def user_register():
     if request.method == 'POST':
         if request.form.get("Register")=="Register":
@@ -54,7 +54,11 @@ def user_register():
         elif request.form.get("Register")=="HOME":
             return(redirect(url_for("Home")))
     else:
-        return(render_template('user-register.html', cond="True", phNo=session["phno"]))
+        if session["phno"]:
+            return(render_template('user-register.html', cond="True", phNo=session["phno"]))
+        else:
+            return(render_template('user-register.html', cond="False"))
+
 
 @app.route('/profile/<username>')
 def profile_page(username):
@@ -244,9 +248,6 @@ def billing():
     elif request.method=='GET':
         return(render_template('admin-billing.html'))
 
-
-
-
 @app.route('/billing/history', methods=['GET', 'POST'], endpoint='Billing History')
 def billHistory():
     if request.method=='POST':
@@ -264,7 +265,7 @@ def billHistory():
             a = histBill()
             return(render_template('admin-billing-history.html', P_table=a))
         elif send == "Add":
-            return(redirect(url_for('Register', pno = request.args.get("pno"))))
+            return(redirect(url_for('Customer Registration')))
         else:
             session["phno"] = send
             return(redirect(url_for('Customer')))
@@ -282,7 +283,7 @@ def customer_info():
         if page == "BACK":
             return(redirect(url_for("Billing History")))
         elif page == "EDIT":
-            return(redirect(url_for('Register')))
+            return(redirect(url_for('Customer Edit')))
         elif page == "HISTORY":
             return(redirect(url_for("History")))
 
@@ -299,7 +300,25 @@ def view_customer():
         if request.form.get("page") == 'BACK':
             return(redirect(url_for('Customer')))
     else:
-        return(render_template('customer-history.html'))
+        return(render_template('customer-history.html', phno=session["phno"],  P_table=userHistory(session["phno"])))
+
+@app.route('/customer/edit', methods=['GET', 'POST'], endpoint="Customer Edit")
+def customerEdit():
+    if request.method == 'POST':
+        if request.form.get("Register")=="Confirm":
+            pno = (int)(request.form["Phone Number"])
+            fn = request.form["First Name"]
+            mn = request.form["Middle Name"]
+            ln = request.form["Last Name"]
+            mail = request.form["Email"]
+            msg = update(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
+            return(redirect(url_for('Customer')))
+        elif request.form.get("Register")=="BACK":
+            return(redirect(url_for("Customer")))
+    else:
+        return(render_template('customer-edit.html', pack=getInfo(session["phno"])))
+
+
 
 # testing purposes
 @app.route('/test/<func>', methods=['GET', 'POST'])
