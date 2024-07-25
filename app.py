@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from mysql_accessor import verify, authenticate, searchName, get_info, delete_my_account
 from admin_functions import add_product, rem_product, show_products, show_product, edit_products
-from cust_functions import registration
+from cust_functions import registration, getInfo
 from order_functions import makeBill, histBill
 import json
 
@@ -78,27 +78,32 @@ def put(log_info):
     with open(admin_info_path, 'w') as file:
         return json.dump(log_info, file)
 
+
 @app.route('/', methods = ['GET', 'POST'], endpoint = 'Logout')
 def admin_authenticate():
-    if request.method=='POST':
-        admin_log_info = provide()
-        action = request.form.get("action")
-        if action=='Login':
-            u = request.form.get("usrname")
-            p = request.form.get("passw")
-            if u == admin_log_info["username"]:
-                if p == admin_log_info["password"]:
-                    session["admin"] = "True"
-                    return (redirect(url_for('Home')))
+    if session:
+        if session["admin"]=="True":
+            return( redirect (url_for("Home")))
+    else:        
+        if request.method=='POST':
+            admin_log_info = provide()
+            action = request.form.get("action")
+            if action=='Login':
+                u = request.form.get("usrname")
+                p = request.form.get("passw")
+                if u == admin_log_info["username"]:
+                    if p == admin_log_info["password"]:
+                        session["admin"] = "True"
+                        return (redirect(url_for('Home')))
+                    else:
+                        return(render_template('admin-auth.html', log_message="Incorrect Password"))
                 else:
-                    return(render_template('admin-auth.html', log_message="Incorrect Password"))
-            else:
-                    return(render_template('admin-auth.html', log_message="Incorrect Username"))
-        elif action=='Change Credentials':
-            return(redirect(url_for('admin_change')))         
-    else:
-        return(render_template('admin-auth.html', log_message="Welcome! Please enter credentials"))
-
+                        return(render_template('admin-auth.html', log_message="Incorrect Username"))
+            elif action=='Change Credentials':
+                return(redirect(url_for('admin_change')))         
+        else:
+            return(render_template('admin-auth.html', log_message="Welcome! Please enter credentials"))
+   
 @app.route('/authenticate/change', methods = ['GET', 'POST'], endpoint = 'Change Credentials')
 def admin_change():
     if request.method=='POST':
@@ -241,17 +246,44 @@ def billing():
 @app.route('/billing/history', methods=['GET', 'POST'], endpoint='Billing History')
 def billHistory():
     if request.method=='POST':
-        if request.form.get("send")=='APPLY':
+        send = request.form.get("send")
+        if request.form.get("page") == "HOME":
+            return(redirect(url_for("Home")))
+        
+        if send == 'APPLY':
             a = histBill(date=request.form.get("date"), 
                          phno=request.form.get("phno"), 
                          amt=request.form.get("amt"),
                          type=request.form.get("type"))
             return(render_template('admin-billing-history.html', P_table=a))
-        if request.form.get("send")=='CLEAR':
+        elif send == 'CLEAR':
             a = histBill()
             return(render_template('admin-billing-history.html', P_table=a))
+        else:
+            return(redirect(url_for('Customer', phno=str(send))))
+    
     elif request.method=='GET':
-        return(render_template('admin-billing-history.html', P_table=histBill()))
+        if request.args.get("messg") is not None:
+            return(render_template('admin-billing-history.html', P_table=histBill(), messg=request.args.get("messg"), create="Add Account"))
+        else:
+            return(render_template('admin-billing-history.html', P_table=histBill()))
+
+@app.route('/customer/information/<string:phno>', methods = ['POST', 'GET'], endpoint="Customer")
+def customer_info(phno):
+    if request.method == 'POST':
+        page = request.form.get("page")
+        if page == "BACK":
+            return(redirect(url_for("Billing History")))
+    else:
+        # return(phno)
+        cust = getInfo(phno=phno)
+        if cust is not None:
+            return(render_template('customer-info.html', Cust_Info=cust))
+        else:
+            return(redirect(url_for("Billing History", messg="Account not created!")))
+
+
+
 
 @app.route('/customer-history', methods=['GET', 'POST'])
 def view_customers():

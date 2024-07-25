@@ -8,6 +8,16 @@ Billing History
 
 {% block content %}
 
+<form method="POST">
+    <input type="submit" name="page" value="HOME">
+    <h1>Billing History</h1>
+    <h2>{{messg}}</h2>  
+    {%if messg == "Account not created!"%}
+        <input type="submit" name="page" value="{{create}}">
+    {%endif%}
+</form>
+
+
 <table>
     <thead>
         <tr>
@@ -60,8 +70,12 @@ Billing History
             {% for item in P_table %}
     <tr>
       <td>{{ item[0] }}</td>  
-      <td> {{item[4] }}</td>
-      <td>{{ item[1] }}</td>  
+      <td>{{item[4] }}</td>
+      <td>
+        <form method="POST">
+            <input type="submit" name="send" value="{{item[1]}}">
+        </form>
+      </td>
       <td>{{ item[2] }}</td>  
       <td>{{ item[3] }}</td>
     </tr>

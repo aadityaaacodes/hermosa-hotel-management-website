@@ -1,0 +1,24 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}
+
+User Profile
+
+{% endblock %}
+
+
+{% block content %}
+
+<form method="POST">
+    <input type="submit" name="page" value="BACK">
+    <h1>Name: {{Cust_Info[2]}}, {{Cust_Info[1]}}</h1>
+    <h1>Registered Phone Number: {{Cust_Info[0]}}</h1>
+    <h1>Mail: {{Cust_Info[3]}}</h1>
+    <input type="submit" name="page" value="HISTORY">
+    <input type="submit" name="page" value="EDIT">
+</form>
+
+
+
+{% endblock %}

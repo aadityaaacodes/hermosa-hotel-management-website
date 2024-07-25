@@ -22,3 +22,24 @@ def registration(pno, fn, mn, ln, mail):
         cursor.close()
         db.close()
         return(f"Username already taken")
+    
+def getInfo(phno):
+    db = mysql.connector.connect(
+        host = "localhost", 
+        user = "root", 
+        password = "cincy@2024",
+        database = "banerjee_kitchen"
+    )
+
+    cursor = db.cursor()
+    
+    sql = (f"SELECT * FROM customer_info WHERE ph_no = {int(phno)};")
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return(result)
+
+
+
+print(getInfo(phno=8169987004))
