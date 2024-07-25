@@ -37,10 +37,10 @@ def show_data(username):
     return(render_template('homepage.html', nameofUser=user, username=username))
 
 # customer-side routes
-@app.route('/user/register', methods=['GET', 'POST'])
+@app.route('/user/register', methods=['GET', 'POST'], endpoint="Register")
 def user_register():
-    if session["admin"] == "True":
-        if request.method == 'POST':
+    if request.method == 'POST':
+        if request.form.get("Register")=="Register":
             pno = (int)(request.form["Phone Number"])
             fn = request.form["First Name"]
             mn = request.form["Middle Name"]
@@ -51,10 +51,10 @@ def user_register():
             else:
                 msg = registration(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
             return(render_template('user-register.html', reg_message=msg))
-        else:
-            return(render_template('user-register.html'))
+        elif request.form.get("Register")=="HOME":
+            return(redirect(url_for("Home")))
     else:
-        return(redirect(url_for('admin_homepage')))
+        return(render_template('user-register.html', cond="True", phNo=session["phno"]))
 
 @app.route('/profile/<username>')
 def profile_page(username):
@@ -120,6 +120,7 @@ def admin_change():
 
 @app.route('/home', methods = ['GET' , 'POST'], endpoint = "Home")
 def admin_homepage():
+    session["phno"] = ""
     if session["admin"] == "True":
         if request.method=='POST':
             action = request.form.get("action")
@@ -243,6 +244,9 @@ def billing():
     elif request.method=='GET':
         return(render_template('admin-billing.html'))
 
+
+
+
 @app.route('/billing/history', methods=['GET', 'POST'], endpoint='Billing History')
 def billHistory():
     if request.method=='POST':
@@ -259,43 +263,43 @@ def billHistory():
         elif send == 'CLEAR':
             a = histBill()
             return(render_template('admin-billing-history.html', P_table=a))
+        elif send == "Add":
+            return(redirect(url_for('Register', pno = request.args.get("pno"))))
         else:
-            return(redirect(url_for('Customer', phno=str(send))))
+            session["phno"] = send
+            return(redirect(url_for('Customer')))
     
     elif request.method=='GET':
         if request.args.get("messg") is not None:
-            return(render_template('admin-billing-history.html', P_table=histBill(), messg=request.args.get("messg"), create="Add Account"))
+            return(render_template('admin-billing-history.html', P_table=histBill(), messg=request.args.get("messg")))
         else:
             return(render_template('admin-billing-history.html', P_table=histBill()))
 
-@app.route('/customer/information/<string:phno>', methods = ['POST', 'GET'], endpoint="Customer")
-def customer_info(phno):
+@app.route('/customer/information', methods = ['POST', 'GET'], endpoint="Customer")
+def customer_info():
     if request.method == 'POST':
         page = request.form.get("page")
         if page == "BACK":
             return(redirect(url_for("Billing History")))
+        elif page == "EDIT":
+            return(redirect(url_for('Register')))
+        elif page == "HISTORY":
+            return(redirect(url_for("History")))
+
     else:
-        # return(phno)
-        cust = getInfo(phno=phno)
+        cust = getInfo(phno=session["phno"])
         if cust is not None:
             return(render_template('customer-info.html', Cust_Info=cust))
         else:
             return(redirect(url_for("Billing History", messg="Account not created!")))
 
-
-
-
-@app.route('/customer-history', methods=['GET', 'POST'])
-def view_customers():
-    pass
-
-#taking orders
-@app.route('/admin/order', methods=["POST", "GET"], endpoint='Order Taking') 
-def take_order():
-    if session["admin"] == "True":
-        return(render_template('admin-order.html'))
+@app.route('/customer/history', methods=['GET', 'POST'], endpoint = 'History')
+def view_customer():
+    if request.method == 'POST':
+        if request.form.get("page") == 'BACK':
+            return(redirect(url_for('Customer')))
     else:
-        return(redirect(url_for('Logout')))
+        return(render_template('customer-history.html'))
 
 # testing purposes
 @app.route('/test/<func>', methods=['GET', 'POST'])
@@ -306,11 +310,6 @@ def test_forms(func):
         # return(render_template('test.html', message=PName))
     else:
         return(render_template(f'admin-{func}.html'))
-
-
-@app.route('/order-management/<tid>/<uid>')
-def order_taking(uid, tid):
-    return(render_template('order.html', uid=uid, tid=tid))
 
 
 if __name__ == '__main__':

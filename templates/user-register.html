@@ -2,8 +2,16 @@
 
 {% block content %}
 <form action="", method="POST">
+    <input type="submit" name="Register" value="HOME">
+    <h1>
+        Register New Customer!
+    </h1>
     <div>
-        <input placeholder="Phone Number", type="text", name="Phone Number">
+        {%if cond == "True" %}
+        <input placeholder="Phone Number", type="text", name="Phone Number", value="{{phNo}}">
+        {% else %}
+            <input placeholder="Phone Number", type="text", name="Phone Number">
+        {% endif %}
         <input placeholder="Email" type="text", name="Email">
     </div>
 
@@ -15,9 +23,6 @@
 
     <div>
         <input value="Register", type="submit", name="Register">
-    </div>
-    <div>
-        <a href="{{url_for('admin_homepage')}}">Return</a>
     </div>
 </form>
 
