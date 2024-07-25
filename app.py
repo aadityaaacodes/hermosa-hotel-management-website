@@ -229,14 +229,14 @@ def user_register():
                 msg = "Fill all the values"
             else:
                 msg = registration(pno=pno, fn=fn, mn=mn, ln=ln, mail=mail)
-            return(render_template('user-register.html', reg_message=msg))
+            return(render_template('customer-register.html', reg_message=msg))
         elif request.form.get("Register")=="HOME":
             return(redirect(url_for("Home")))
     else:
         if session["phno"]:
-            return(render_template('user-register.html', cond="True", phNo=session["phno"]))
+            return(render_template('customer-register.html', cond="True", phNo=session["phno"]))
         else:
-            return(render_template('user-register.html', cond="False"))
+            return(render_template('customer-register.html', cond="False"))
 
 @app.route('/customer/information', methods = ['POST', 'GET'], endpoint="Customer")
 def customer_info():

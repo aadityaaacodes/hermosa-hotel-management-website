@@ -1,9 +1,0 @@
-{% extends "layout.html" %}
-
-{% block content %}
-
-<p hidden="true">{{username}}</p>
-<h1>Welcome back {{nameofUser}}!</h1>
-<button><a href="{{url_for('profile_page', username=username)}}">Your Profile</a></button>
-
-{% endblock %}
