@@ -7,7 +7,7 @@ Product Catalogue
 {% block content %}
 
 <form action="" method="POST">
-  <input type="submit" name="action" value="Home">
+  <input type="submit" name="send" value="Home">
 </form>
 
 <h1>Product Catalogue</h1>
@@ -98,7 +98,13 @@ Product Catalogue
 
     {% for item in P_table %}
     <tr>
-      <td>{{ item[0] }}</td>  
+      <td>
+        <form method="POST">
+          <!-- {{ item[0] }} -->
+          <!-- <input type="hidden" name='product_id' value='{{item[0]}}'> -->
+          <input type="submit" name="send" value="{{item[0]}}">
+        </form>
+      </td>  
       <td>{{ item[1] }}</td>  
       <td>{{ item[2] }}</td>  
       <td>{{ item[3] }}</td> 
@@ -108,13 +114,13 @@ Product Catalogue
       <td>
         <form method="POST" action="">
         <input type="hidden" name='product_id' value='{{item[0]}}'>
-        <input type="submit" name="action" value="edit">
+        <input type="submit" name="send" value="edit">
         </form>
       </td>
       <td>
         <form method="POST" action="">
           <input type="hidden" name='product_id' value='{{item[0]}}'>
-          <input type="submit" name="action" value="delete">
+          <input type="submit" name="send" value="delete">
           </form>
       </td>
     </tr>

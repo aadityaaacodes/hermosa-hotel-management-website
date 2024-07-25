@@ -53,9 +53,10 @@ def show_products(pid='', p_name='', price='', rating='', frequency='', isVeg=''
     )
 
     q1 = "SELECT * FROM product_info"
+    q2 = ""
+    q3 = ""
 
     sequences = []
-    q2 = ""
     if pid:
         sequences.append(f"product_id {pid}")
     if p_name:
@@ -83,7 +84,6 @@ def show_products(pid='', p_name='', price='', rating='', frequency='', isVeg=''
     if type:
         conds.append(f"type='{type}' and ")
 
-    q3 = ""
     for c in conds:
         q3 += c 
     
@@ -119,7 +119,7 @@ def edit_products(p_id, p_name, price, desc, veg, type, imgL):
         db.commit()
         cursor.close()
         db.close()
-        return("Product Added Successfully!")
+        return("Product Edited Successfully!")
     except Error as err:
         cursor.close()
         db.close()
@@ -148,14 +148,16 @@ def show_product(pid):
 
 
 
+print((show_product("19")))
+# testing comments:
 # (show_products(isVeg='Non-Veg', type='Dessert', price='ASC', rating='DESC'))
 # print(show_products(type='Food'))
-(show_products(pid="",p_name="ASC", 
-                                    price="DESC", 
-                                    rating="", 
-                                    frequency="", 
-                                    isVeg="", 
-                                    type="Dessert"))
+# (show_products(pid="",p_name="ASC", 
+#                                     price="DESC", 
+#                                     rating="", 
+#                                     frequency="", 
+#                                     isVeg="", 
+#                                     type="Dessert"))
 # print(a)
 # for i in show_product(37):
 #     print(i)

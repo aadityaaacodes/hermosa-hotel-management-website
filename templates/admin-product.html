@@ -1,0 +1,50 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}
+
+{{Product_Name[0]}}
+
+{% endblock %}
+
+
+{% block content %}
+
+<form method="POST">
+    <input type="submit" name="page" value="Catalogue">
+</form>
+
+<h1>
+    Product Page
+</h1>
+
+<h2>
+    Name : {{Product_Name[0]}}
+</h2>
+
+<h2>
+    Price : {{Product_Name[1]}}
+</h2>
+
+<h2>
+    <img src="{{Product_Name[5]}}" alt="Image goes here">
+</h2>
+
+<h2>
+    Description : {{Product_Name[4]}}
+</h2>
+
+<h2>
+    Type : {{Product_Name[3]}}
+</h2>
+
+<h2>
+    Ingredient : {{Product_Name[2]}}
+</h2>
+<form method="POST">
+    <input type="submit" name="action" value="EDIT">
+    <input type="submit" name="action" value="DELETE">
+</form>
+
+
+{% endblock %}
