@@ -24,3 +24,8 @@ tbody tr:nth-child(odd) {
 tbody tr:nth-child(even) {
     background-color: #ffffff; /* White color */
 }
+
+img{
+    width: 500px;
+    height: auto;
+}
