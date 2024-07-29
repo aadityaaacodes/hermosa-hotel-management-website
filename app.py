@@ -20,10 +20,10 @@ def put(log_info):
         return json.dump(log_info, file)
 
 
-@app.route('/', methods = ['GET', 'POST'], endpoint = 'Logout')
+@app.route('/', methods = ['GET', 'POST'], endpoint = 'Auth')
 def admin_authenticate():
-    if session:
-        if session["admin"]=="True":
+    x = session.get("admin")
+    if x:
             return( redirect (url_for("Home")))
     else:        
         if request.method=='POST':
@@ -44,7 +44,12 @@ def admin_authenticate():
                 return(redirect(url_for('admin_change')))         
         else:
             return(render_template('admin-auth.html', log_message="Welcome! Please enter credentials"))
-   
+
+@app.route('/logout', methods=["GET"], endpoint='Logout')
+def logout():
+    session.pop("admin", None)
+    return(redirect(url_for('Auth')))
+
 @app.route('/authenticate/change', methods = ['GET', 'POST'], endpoint = 'Change Credentials')
 def admin_change():
     if request.method=='POST':
@@ -65,8 +70,6 @@ def admin_homepage():
     if session["admin"] == "True":
         if request.method=='POST':
             action = request.form.get("action")
-            if action == "Logout":
-                session["admin"] = "False"
             return(redirect(url_for(f"{action}")))
         else:
             if request.args.get("messg") is None:
